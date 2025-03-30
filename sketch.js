@@ -18,7 +18,7 @@ const levelButtonsData = [
   { label: "sum rule", yPos: 130, size: { width: 250, height: 40 }, action: () => { chosenLevel = "sumRule"; changeLevel("sumRule") } },
   { label: "product rule", yPos: 180, size: { width: 250, height: 40 }, action: () => { chosenLevel = "productRule"; changeLevel("productRule") } },
   { label: "difference rule", yPos: 230, size: { width: 250, height: 40 }, action: () => { chosenLevel = "differenceRule"; changeLevel("differenceRule") } },
-  { label: "quotient rule", yPos: 280, size: { width: 250, height: 40 }, action: () => { chosenLevel = " quotientRule"; changeLevel("quotientRule") } },
+  { label: "quotient rule", yPos: 280, size: { width: 250, height: 40 }, action: () => { chosenLevel = "quotientRule"; changeLevel("quotientRule") } },
   { label: "chain rule", yPos: 330, size: { width: 250, height: 40 }, action: () => { chosenLevel = "chainRule"; changeLevel("chainRule") } }
 ];
 
