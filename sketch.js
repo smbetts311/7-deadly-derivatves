@@ -2,7 +2,6 @@ let gameFont;
 let buttons = {}; 
 let currentGame = 'Title Card';
 let rulesImage;
-let monster = [];
 let questions = [];
 let lives = 3;
 let chosenLevel;
@@ -11,6 +10,8 @@ let submitButton;
 let currentQuestion = 0;
 let givenQuestion;
 let monster1, monster2, monster3;
+let monsters = [];
+let ranIndex;
 
 const levelButtonsData = [
   { label: "constant rule", yPos: 30, size: { width: 250, height: 40 }, action: () => { chosenLevel = "constantRule"; changeLevel(); } },
@@ -26,6 +27,12 @@ const levelButtonsData = [
 function preload(){
   gameFont = loadFont("assets/PressStart2P-Regular.ttf");
   rulesImage = loadImage("assets/Seven_Deadly_Derivatives (1).jpeg");
+  monster1 = loadImage("assets/monster1.png");
+  monster2 = loadImage("assets/monster2.png");
+  monster3 = loadImage("assets/monster3.png");
+  
+  monsters = [monster1, monster2, monster3];
+  ranIndex = floor(random(monsters.length + 1));
   
 }
 
@@ -36,9 +43,6 @@ class Question{
   } 
 }
 
-//class Monster{
-  //constructor(){ }
-//}
 
 function setup() {
   createCanvas(400, 400);
@@ -78,7 +82,7 @@ function initializeButtons() {
   buttons.levelButton = createStyledButton('levels', width / 2 - 100, 160, buttonStyle, () => changeGameState('levels'));
   buttons.rulesButton = createStyledButton('rules', width / 2 - 100, 230, buttonStyle, () => changeGameState('rules'));
   buttons.quitButton = createStyledButton('quit?', width / 2 - 100, 300, buttonStyle, quit);
-  buttons.backButton = createStyledButton('◀', 10, 300, { size: { width: 50, height: 50 }, font: { family: "PressStart2P", size: "24px" } }, () => changeGameState('Title Card'));
+  buttons.backButton = createStyledButton('◀', 10, 330, { size: { width: 50, height: 50 }, font: { family: "PressStart2P", size: "24px" } }, () => changeGameState('Title Card'));
   buttons.backButton.hide();
  
   answerBox = createInput('');
@@ -172,21 +176,32 @@ function drawGame(){
   background(100, 205, 209);
   if(lives == 0){
     changeGameState('gameOver');
+    return;
+  }
+  if(currentQuestion >= questions.length){
+    answerBox.value('');
+    changeGameState('gameOver');
+    return;
   }
   givenQuestion = questions[currentQuestion].question;
   textSize(16);
   textAlign(CENTER);
   fill(255);
-  text(givenQuestion, 90, 340);
+  text(givenQuestion, width/2, 300);
   
-  text("Lives: " + lives, width/2, 50);
+  imageMode(CENTER);
+  image(monsters[ranIndex], width / 2, height / 2 - 50, width, height  - 50);
+  
+  
+  text("Lives: " + lives, width/2, 30);
 }
 
   
 function gameUI(){
     Object.values(buttons).forEach(button => button.hide());
     answerBox.show();
-    submitButton.show(); 
+    submitButton.show();
+    buttons.backButton.show();
 }
 
 
@@ -196,7 +211,7 @@ function checkAnswer(){
   
   if(currentAnswer == correctAnswer){
     ++currentQuestion;
-    //kill monster
+    ranIndex = floor(random(monsters.length + 1));
     drawGame();
   }
   else if(currentAnswer != correctAnswer){
@@ -225,7 +240,6 @@ function drawGameOver(){
   textFont(gameFont)
   textAlign(CENTER,CENTER)
   text("GAME OVER",width/2,height/2-50)
-
 }
 
 function changeLevel(){
@@ -242,7 +256,7 @@ function changeLevel(){
                    new Question("f(x) = 13x^2", "26x"),
                    new Question("f(x) = 5x^3", "15x^2"),
                    new Question("f(x) = 4x^7", "28x^6"),
-                   new Question("f(x) = 10x^8", "80^7")];
+                   new Question("f(x) = 10x^8", "80x^7")];
       break;
     case 'sumRule':
       questions = [new Question("f(x) = 3x^4 + 27x", "12x^3 + 27"),
