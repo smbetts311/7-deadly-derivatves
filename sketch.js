@@ -25,7 +25,7 @@ const levelButtonsData = [
 
 function preload(){
   gameFont = loadFont("assets/PressStart2P-Regular.ttf");
-  rulesImage = loadImage("assets/Seven_Deadly_Derivatives.jpeg");
+  rulesImage = loadImage("assets/Seven_Deadly_Derivatives (1).jpeg");
   
 }
 
@@ -36,9 +36,9 @@ class Question{
   } 
 }
 
-class Monster{
-  constructor(){ }
-}
+//class Monster{
+  //constructor(){ }
+//}
 
 function setup() {
   createCanvas(400, 400);
@@ -81,9 +81,14 @@ function initializeButtons() {
   buttons.backButton = createStyledButton('◀', 10, 300, { size: { width: 50, height: 50 }, font: { family: "PressStart2P", size: "24px" } }, () => changeGameState('Title Card'));
   buttons.backButton.hide();
  
+  answerBox = createInput('');
+  answerBox.position(200, 330);
+  answerBox.hide();
+  submitButton = createButton('▶');
+  submitButton.position(350,330);
+  submitButton.mousePressed(checkAnswer);
+  submitButton.hide();
   
-  
-
   levelButtonsData.forEach(data => {
     const button = createButton(data.label);
     button.size(data.size.width, data.size.height);
@@ -173,16 +178,15 @@ function drawGame(){
   textAlign(CENTER);
   fill(255);
   text(givenQuestion, 90, 340);
+  
+  text("Lives: " + lives, width/2, 50);
 }
 
   
 function gameUI(){
     Object.values(buttons).forEach(button => button.hide());
-    answerBox = createInput('');
-    answerBox.position(150, 330);
-    submitButton = createButton('▶');
-    submitButton.position(300,330);
-    submitButton.mousePressed(checkAnswer);
+    answerBox.show();
+    submitButton.show(); 
 }
 
 
@@ -196,8 +200,10 @@ function checkAnswer(){
     drawGame();
   }
   else if(currentAnswer != correctAnswer){
-    ++currentQuestion;
     --lives;
+  }
+  if(lives == 0){
+    changeGameState('gameOver');
   }
   answerBox.value('');
 }
@@ -211,37 +217,67 @@ function drawRules(){
 function quit(){}
 
 function drawGameOver(){
-background(100 ,205 ,209)
-textSize(20)
-fill(255 ,255 ,255)
-textFont(gameFont)
-textAlign(CENTER,CENTER)
-text("GAME OVER",width/2,height/2-50)
+  Object.values(buttons).forEach(button => button.hide());
+  buttons.backButton.show();  
+  background(100 ,205 ,209)
+  textSize(20)
+  fill(255 ,255 ,255)
+  textFont(gameFont)
+  textAlign(CENTER,CENTER)
+  text("GAME OVER",width/2,height/2-50)
 
 }
 
 function changeLevel(){
   switch(chosenLevel){
     case 'constantRule':
-      questions = [new Question("1 + 1 =", "2")];
+      questions = [new Question("f(x) = 2", "0"), 
+                   new Question("f(x) = 27", "0"), 
+                   new Question("f(x) = 59", "0"), 
+                   new Question("f(x) = 357", "0"), 
+                   new Question("f(x) = 45", "0")];
       break;
     case 'powerRule':
-      questions = [new Question("1 + 1 =", "2")];
+      questions = [new Question("f(x) = 2x", "2"),
+                   new Question("f(x) = 13x^2", "26x"),
+                   new Question("f(x) = 5x^3", "15x^2"),
+                   new Question("f(x) = 4x^7", "28x^6"),
+                   new Question("f(x) = 10x^8", "80^7")];
       break;
     case 'sumRule':
-      questions = [];
+      questions = [new Question("f(x) = 3x^4 + 27x", "12x^3 + 27"),
+                   new Question("f(x) = 30x^4 + 21x^3", "120x^3 + 63x^2"),
+                   new Question("f(x) = 6x^9 + 9x^8", "54x^8, 72x^7"),
+                   new Question("f(x) = 15x^2 + 13x^2", "30x + 26x"),
+                   new Question("f(x) = 69x + 24x^3", "69 + 72x^2")];
       break;
     case 'differenceRule':
-      questions = [];
+      questions = [new Question("f(x) = 12x^6 - 21x^2", "72x^5 - 42x"),
+                   new Question("f(x) = 6x^3 - 4x^5", "18x^2 - 20x^4"), 
+                   new Question("f(x) = 2x^20 - 20x^2", "40x^19 - 40x"),
+                   new Question("f(x) = 100x^2 - 36x^3", "200x - 108x^2"),
+                   new Question("f(x) = 9x^10 - 10x^7", "90x^9 - 70x^6")];
       break;
     case 'productRule':
-      questions = [];
+      questions = [new Question("f(x) = (20x + 1) * (10 + x)", "40x + 201"), 
+                   new Question("f(x) = (x^2 - 1) * (x + 5)", "3x^2 + 20x - 1"), 
+                   new Question("f(x) = (x^3 + 4) * (x^2 + 3)", "5x^4 + 9x^2 + 8x"), 
+                   new Question("f(x) = (3 - x^2) * (x + 4)", "-3x^2 - 8x + 3"), 
+                   new Question("f(x) = (x^6 - 3x^(20)) * (24x^2 + 3)", "-1584x^21 - 180x^19 + 192x^7 + 18x^5")];
       break;
     case 'quotientRule':
-      questions = [];
+      questions = [new Question("f(x) = (10x + 1)/(x^2 + 2)", "(-10x^2 - 2x + 20)/(x^2 + 2)^2"), 
+                   new Question("f(x) = (15x)/(3x-5x^2)", "75/(5x-3)^2"), 
+                   new Question("f(x) = (7x^3 - 2x^2 - 12)/(2x^2)", "(7x^3 + 24)/(2x^3)"), 
+                   new Question("f(x) = (24x + 3)/(12x^2)", "(-4x-1)/(2x^3)"), 
+                   new Question("f(x) = x^2/(4-25x)", "(8x-25x^2)/(4-25x)^2")];
       break;
     case 'chainRule':
-      questions = [];
+      questions = [new Question("f(x) = (x^4 - 3x^2 + 1)^3", "3(x^4 - 3x^2 + 1) ^2(4x^3 - 6x)"),
+                   new Question("f(x) = (13 + x)^5", "5(13 + x)^4"), 
+                   new Question("f(x) = (25 - 30x)^7", "-210(25 - 30x)^6"), 
+                   new Question("f(x) = (8x^2 - 4x^5)^2", "2(8x^2 - 4x^5)(16x- 20x^4)"), 
+                   new Question("f(x) = (36 - 20x + 10x^2)^4", "4(36 - 20x + 10x^2)^3 (20x - 20)")];
       break;
   }
   
